@@ -1,0 +1,46 @@
+{
+    "pastbin_key" : "XXXXXXXXXXXXXXXXXXXXX",
+    "pastbin_endpoint" : "https://pastebin.com/api/api_post.php",
+    "database": "test",
+    "table" : "users",
+    "queue" : "userlog",
+    "redis" : [ 
+         {
+             "host": "rnode-0",
+             "port": "6379"
+         },
+         {
+             "host": "rnode-1",
+             "port": "6379"
+         },
+         {
+             "host": "rnode-2",
+             "port": "6379"
+         },
+         {
+             "host": "rnode-3",
+             "port": "6379"
+         },
+         {
+             "host": "rnode-4",
+             "port": "6379"
+         },
+         {
+             "host": "rnode-5",
+             "port": "6379"
+         },
+         {
+             "host": "rnode-6",
+             "port": "6379"
+         } 
+     ],
+    "clickhouse" : [ "clickhouse01","clickhouse02","clickhouse03","clickhouse04" ],
+    "dispatch_timeout": 2,
+    "parallel_count" : 5,
+    "valid_tasks" : 4,
+    "users" : 10,
+    "tasks" : 100,
+    "result_file" : "/app/data/result.log",
+    "database_file" : "/app/data/users.csv"
+ }
+ 

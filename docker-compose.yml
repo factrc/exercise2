@@ -1,0 +1,158 @@
+version: '3'
+services:
+  zookeeper:
+    image: zookeeper:3.7
+    container_name: zookeeper
+    hostname: zookeeper
+    ports:
+      - "127.0.0.1:2181:2181"
+  clickhouse01:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse01
+    hostname: clickhouse01
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+    volumes:
+      - ${PWD}/clickhouse/clickhouse01:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+      - clickhouse02
+      - clickhouse03
+      - clickhouse04
+  clickhouse02:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse02
+    hostname: clickhouse02
+    volumes:
+      - ${PWD}/clickhouse/clickhouse02:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+  clickhouse03:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse03
+    hostname: clickhouse03
+    volumes:
+      - ${PWD}/clickhouse/clickhouse03:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+  clickhouse04:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse04
+    hostname: clickhouse04
+    volumes:
+      - ${PWD}/clickhouse/clickhouse04:/etc/clickhouse-server
+    depends_on:
+      - zookeeper
+
+  rnode-2:
+    image: bitnami/redis-cluster:latest
+    container_name: rnode-2
+    hostname: rnode-2
+    volumes:
+      - rdata-2:/bitnami/redis/data
+    depends_on:
+      - rnode-0
+      - rnode-1
+      - rnode-3
+      - rnode-4
+      - rnode-5
+      - rnode-6
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+      - 'REDIS_CLUSTER_REPLICAS=1'
+      - 'REDIS_NODES=rnode-2 rnode-0 rnode-1 rnode-3 rnode-4 rnode-5 rnode-6'
+      - 'REDIS_CLUSTER_CREATOR=yes'
+    ports:
+      - "127.0.0.1:6379:6379"
+  rnode-0:
+    image: bitnami/redis-cluster:latest
+    container_name: rnode-0
+    hostname: rnode-0
+    volumes:
+      - rdata-0:/bitnami/redis/data
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+      - 'REDIS_NODES=rnode-2 rnode-0 rnode-1 rnode-3 rnode-4 rnode-5 rnode-6'
+    ports:
+      - "127.0.0.1:6380:6379"
+  rnode-1:
+    image: bitnami/redis-cluster:latest
+    container_name: rnode-1
+    hostname: rnode-1
+    volumes:
+      - rdata-1:/bitnami/redis/data
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+      - 'REDIS_NODES=rnode-2 rnode-0 rnode-1 rnode-3 rnode-4 rnode-5 rnode-6'
+    ports:
+      - "127.0.0.1:6381:6379"
+  rnode-3:
+    image: bitnami/redis-cluster:latest
+    container_name: rnode-3
+    hostname: rnode-3
+    volumes:
+      - rdata-3:/bitnami/redis/data
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+      - 'REDIS_NODES=rnode-2 rnode-0 rnode-1 rnode-3 rnode-4 rnode-5 rnode-6'
+    ports:
+      - "127.0.0.1:6383:6379"
+  rnode-4:
+    image: bitnami/redis-cluster:latest
+    container_name: rnode-4
+    hostname: rnode-4
+    volumes:
+      - rdata-4:/bitnami/redis/data
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+      - 'REDIS_NODES=rnode-2 rnode-0 rnode-1 rnode-3 rnode-4 rnode-5 rnode-6'
+    ports:
+      - "127.0.0.1:6384:6379"
+  rnode-5:
+    image: bitnami/redis-cluster:latest
+    container_name: rnode-5
+    hostname: rnode-5
+    volumes:
+      - rdata-5:/bitnami/redis/data
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+      - 'REDIS_NODES=rnode-2 rnode-0 rnode-1 rnode-3 rnode-4 rnode-5 rnode-6'
+    ports:
+      - "127.0.0.1:6385:6379"
+  rnode-6:
+    image: bitnami/redis-cluster:latest
+    container_name: rnode-6
+    hostname: rnode-6
+    volumes:
+      - rdata-6:/bitnami/redis/data
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+      - 'REDIS_NODES=rnode-2 rnode-0 rnode-1 rnode-3 rnode-4 rnode-5 rnode-6'
+    ports:
+      - "127.0.0.1:6386:6379"
+  app:
+    build: .
+    container_name: app
+    image: app
+    hostname: app
+    volumes:
+      - ./data/:/app/data
+    depends_on:
+      - rnode-2
+      - clickhouse01
+volumes:
+  rdata-0:
+    driver: local
+  rdata-1:
+    driver: local
+  rdata-2:
+    driver: local
+  rdata-3:
+    driver: local
+  rdata-4:
+    driver: local
+  rdata-5:
+    driver: local
+  rdata-6:
+    driver: local
