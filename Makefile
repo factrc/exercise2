@@ -14,7 +14,7 @@ config:
 .PHONY: up
 up: config
 	echo 'Prepare create python2 image, support Clickhouse-driver&Redis Cluster'
-	docker images factrc/python2 | grep -q '^factrc/python2\s\+v1' || cd ${PWD}/python2image && docker build -t factrc/python2:v1 .
+	docker images factrc/python2 | grep -q '^factrc/python2\s\+v1' || { cd ${PWD}/python2image && docker build -t factrc/python2:v1 . ; }
 	docker-compose up -d
 	echo 'Wait 5 sec ' && sleep 5
 	echo "Result file in $PWD/data"
